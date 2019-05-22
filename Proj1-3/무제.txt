@@ -1,0 +1,39 @@
+create table main(a int, b char(10), c date, d int, f int, primary key(a, b, c));
+create table subone(a int, b char(15), c date, d date, foreign key(a, b, c) references main(a,b,c));
+create table subone(a int, b char(10), c date, d date, primary key(c, d), foreign key(a, b, c) references main(a,b,c));
+create table subtwo(a int, b char(10), c date, d date, foreign key(a, b, c) references main(a, b, c), foreign key(c, d) references subone(c, d));
+insert into subtwo values(10, 'hello', 1995-05-31, 2019-05-31);
+insert into subone values(10, 'hello', 1995-05-31, 2019-05-31);
+insert into main values(10, 'hello', 1995-05-31, 30, 40);
+insert into main (f, c, d, a, b) values(50, 1996-05-31, -10, 25, 'goodbye');
+insert into main values(10, 'hello', 1995-05-31, 50, 50);
+insert into main values(20, 'hello', 1995-05-31, 50, 50);
+insert into main values(40, 'google', 1997-05-31, 30, 50);
+insert into main values(70, 'kakao', 2000-08-20, 70, -10);
+insert into subtwo values(10, 'hello', 1995-05-31, 1997-05-31);
+insert into subone values(10, 'hello', 1995-05-31, 2019-05-31);
+insert into subtwo values(10, 'hello', 1995-05-31, 2019-05-31);
+
+//one another test
+create table p(a int, b int, primary key(a,b));
+create table q(a char(5), b char(10), primary key(a,b));
+create table t(a int, b int, c char(5), d char(10), foreign key(a,b) references p(a, b), foreign key(c, d) references q(a, b));
+insert into p values(10, 20);
+insert into p values(10, 30);
+insert into q values('apple', 'google');
+insert into q values('youth', 'temple');
+insert into t values(10, 20, 'apple', 'google');
+insert into t values(10, 20, 'app', 'google');
+insert into t values(10, 200, 'apple', 'google');
+insert into t values(10, 20, 'apple', 'goog');
+insert into t values(100, 20, 'apple', 'google');
+insert into t values(100, null, 'apple', 'google');
+insert into t values(null, 200, 'apple', 'google');
+insert into t values(null, null, 'apple', 'google');
+insert into t values(10, 20, null, 'googlsse');
+insert into t values(10, 20, 'app', null);
+insert into t values(10, 20, null, null);
+delete from p where a = 10 and b = 20;
+
+//not distinct test
+

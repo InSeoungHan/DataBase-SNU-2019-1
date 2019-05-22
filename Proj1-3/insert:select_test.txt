@@ -1,0 +1,90 @@
+create table aaa(a int, b char(5), c date, primary key(a,c));
+
+insert into abc values(50, 'hello', 2014-05-31);
+
+insert into aaa values(50, 'hello');
+insert into aaa values(50, 40, 50);
+insert into aaa (a, b) values(50, 'hello');
+insert into aaa (a, b, c) values(50, 'hello', 10);
+
+insert into aaa (a, b, c) values(10, 'aaaaaaaa', 2014-05-31);
+insert into aaa (a, c, b) values(20, 2014-05-31, 'bbbbbbbb');
+
+insert into aaa (a, c, b) values(null, 2019-05-31, 'hello world');
+insert into aaa (a, c, b) values(500, null, 'hello world');
+insert into aaa (a, c, b) values(null, null, 'hello world');
+insert into aaa values(null, 'demon', 2019-05-31);
+insert into aaa values(500, 'demon', null);
+insert into aaa values(null, 'demon', null);
+
+insert into aaa (a, c, b) values(80, 2014-05-20, null);
+
+insert into aaa (a, b, g) values(80, 'hello', 500);
+insert into aaa (a, b, c, d) values(80, 'logo', 2019-03-02, 500);
+
+insert into aaa (c, b, a) values(2014-05-31, 'abcde', 10);
+insert into aaa  values(20, 'hello', 2014-05-31);
+
+create table bbb(a int, b char(5), c date, foreign key(a,c) references aaa(a,c));
+insert into bbb (a, b, c) values(20, 'heloe', 2012-07-05);
+insert into bbb (c, a, b) values(2014-05-20, 100, 'logo');
+
+insert into bbb values(null, null, null);
+insert into bbb (a, b, c) values(10, 'ccccccccc', 2014-05-31);
+
+insert into bbb (a, b, c) values(null, 'aaaaaaaaa', 2014-05-31);
+insert into bbb (a, b, c) values(80, 'bbbbbbbbb', null);
+
+select * from ccc;
+select * from aaa, bbb, ccc;
+
+select a, b from aaa, bbb;
+select a, b from aaa as T, bbb as S;
+select T.a, T.b from aaa as T, bbb as T;
+select aaa.a, aaa.b from aaa as T, bbb;
+
+select aaa.a, bbb.b from aaa, bbb;
+select T.a, S.b from aaa as T, bbb as S;
+select T.a, T.b from aaa as T, bbb;
+select aaa.a, aaa.b from aaa, bbb;
+
+create table ccc(a int, b char(6), c date, primary key(c,a));
+
+insert into ccc values(10, 'aaaaaaaaaa', 2014-05-31);
+insert into ccc values(20, 'bbbbbbbbbbbbb', 2015-05-31);
+insert into ccc values(30, 'ccccccccccc', 2016-03-20);
+insert into ccc values(40, 'ddddddddddd', 2002-03-20);
+insert into ccc values(50, null, 2002-03-20);
+
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where aaa.a > ccc.b;
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where aaa.b > ccc.c;
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where aaa.c > ccc.a;
+
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where ddd.c > ccc.a;
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where aaa.c > ddd.a;
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where aaa.d > ccc.a;
+select aaa.a, aaa.b 
+from aaa, bbb, ccc
+where c > ccc.a;
+
+select aaa.a as AA, ccc.a as CA 
+from aaa, bbb, ccc
+where aaa.a > ccc.a;
+select aaa.b as AB, ccc.b as CB
+from aaa, bbb, ccc
+where aaa.b > ccc.b;
+select aaa.c as AC, ccc.c as CC
+from aaa, bbb, ccc
+where aaa.c > ccc.c;

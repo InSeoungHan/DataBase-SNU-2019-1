@@ -1,0 +1,174 @@
+'aaa' table is created
+No such table
+Insertion has failed: Types are not matched
+Insertion has failed: Types are not matched
+Insertion has failed: Types are not matched
+Insertion has failed: Types are not matched
+The row is inserted
+The row is inserted
+Insertion has failed: 'a' is not nullable
+Insertion has failed: 'c' is not nullable
+Insertion has failed: 'a' is not nullable
+Insertion has failed: 'a' is not nullable
+Insertion has failed: 'c' is not nullable
+Insertion has failed: 'a' is not nullable
+The row is inserted
+Insertion has failed: 'g' does not exist
+Insertion has failed: Types are not matched
+Insertion has failed: Primary key duplication
+Insertion has failed: Primary key duplication
+'bbb' table is created
+Insertion has failed: Referential integrity violation
+Insertion has failed: Referential integrity violation
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+Selection has failed: 'ccc' does not exist
+Selection has failed: 'ccc' does not exist
+Selection has failed: fail to resolve 'a'
+Selection has failed: fail to resolve 'a'
+Selection has failed: fail to resolve 'a'
+Selection has failed: fail to resolve 'a'
++----+-------+
+| a  | b     |
++----+-------+
+| 10 | null  |
+| 20 | null  |
+| 80 | null  |
+| 10 | ccccc |
+| 20 | ccccc |
+| 80 | ccccc |
+| 10 | aaaaa |
+| 20 | aaaaa |
+| 80 | aaaaa |
+| 10 | bbbbb |
+| 20 | bbbbb |
+| 80 | bbbbb |
++----+-------+
++----+-------+
+| a  | b     |
++----+-------+
+| 10 | null  |
+| 20 | null  |
+| 80 | null  |
+| 10 | ccccc |
+| 20 | ccccc |
+| 80 | ccccc |
+| 10 | aaaaa |
+| 20 | aaaaa |
+| 80 | aaaaa |
+| 10 | bbbbb |
+| 20 | bbbbb |
+| 80 | bbbbb |
++----+-------+
++----+-------+
+| a  | b     |
++----+-------+
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
++----+-------+
++----+-------+
+| a  | b     |
++----+-------+
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
+| 10 | aaaaa |
+| 20 | bbbbb |
+| 80 | null  |
++----+-------+
+'ccc' table is created
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+Where clause try to compare incomparable values
+Where clause try to compare incomparable values
+Where clause try to compare incomparable values
+Where clause try to reference tables which are not specified
+Where clause try to reference tables which are not specified
+Where clause try to reference non existing column
+Where clause contains ambiguous reference
++----+----+
+| AA | CA |
++----+----+
+| 20 | 10 |
+| 80 | 10 |
+| 20 | 10 |
+| 80 | 10 |
+| 20 | 10 |
+| 80 | 10 |
+| 20 | 10 |
+| 80 | 10 |
+| 80 | 20 |
+| 80 | 20 |
+| 80 | 20 |
+| 80 | 20 |
+| 80 | 30 |
+| 80 | 30 |
+| 80 | 30 |
+| 80 | 30 |
+| 80 | 40 |
+| 80 | 40 |
+| 80 | 40 |
+| 80 | 40 |
+| 80 | 50 |
+| 80 | 50 |
+| 80 | 50 |
+| 80 | 50 |
++----+----+
++-------+--------+
+| AB    | CB     |
++-------+--------+
+| bbbbb | aaaaaa |
+| bbbbb | aaaaaa |
+| bbbbb | aaaaaa |
+| bbbbb | aaaaaa |
++-------+--------+
+
++-----------+-----------+
+| AC        | CC        |
++-----------+-----------+
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-31 | 2002-3-20 |
+| 2014-5-20 | 2002-3-20 |
++-----------+-----------+

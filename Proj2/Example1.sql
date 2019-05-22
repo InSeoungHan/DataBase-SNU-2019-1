@@ -1,0 +1,31 @@
+SHOW TABLES;
+Select * from Building;
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Fillmore", "San Francisco", 1000); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Great American Music Hall", "San Francisco", 1500); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Fox Theater", "Oakland", 3000); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Trout’s Nightclub", "Bakersfield", 1200); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Troubadour", "West Hollywood", 1800); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Lighthouse Cafe", "Hermosa Beach", 1500);
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Casbah", "San Diego", 800);
+INSERT INTO Building (Name, Location, Capacity) VALUES("Art Center", "Seoul", 200);
+
+INSERT INTO Performance (Name, Type, Price) VALUES("Le Reve", "Musical", 150000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Michael Jackson ONE", "Musical", 300000);
+INSERT INTO Performance (Name, Type, Price) VALUES("La Boheme", "Opera", 130000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Carmen", "Opera", 80000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Singspiel", "Opera", 55000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Hamlet", "Drama", 30000);
+INSERT INTO Performance (Name, Type, Price) VALUES("The Tragedy of Othello", "Drama", 68000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Romeo and Juliet", "Drama", 25000);
+INSERT INTO Performance (Name, Type, Price) VALUES("King Lear", "Drama", 35000);
+INSERT INTO Performance (Name, Type, Price) VALUES("Macbeth", "Drama", 77000);
+INSERT INTO Performance (Name, Type, Price) VALUES("A Doll House", "Drama", 100000);
+
+INSERT INTO Audience (Name, Sex, Age) VALUES("Inseoung", "M", 25);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Bob", "M", 6);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Mina", "F", 11);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Jacob", "M", 18);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Steve", "M", 25);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Mary", "F", 22);
+INSERT INTO Audience (Name, Sex, Age) VALUES("John", "M", 30);
+INSERT INTO Audience (Name, Sex, Age) VALUES("Sujan", "F", 13);

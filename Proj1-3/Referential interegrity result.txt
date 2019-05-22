@@ -1,0 +1,42 @@
+'main' table is created
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+'subone' table is created
+'subtwo' table is created
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+The row is inserted
+3 row(s) are deleted
+3 row(s) are not deleted due to referential integrity
++----+----+
+| x  | y  |
++----+----+
+| 20 | 10 |
+| 30 | 10 |
+| 40 | 10 |
++----+----+
++------+------+
+| x    | y    |
++------+------+
+| null | null |
+| 20   | 10   |
+| 40   | 10   |
+| null | null |
++------+------+
++----+------+
+| x  | y    |
++----+------+
+| 10 | null |
+| 20 | 10   |
+| 30 | 10   |
+| 40 | 10   |
++----+------+
