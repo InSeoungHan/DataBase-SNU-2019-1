@@ -195,8 +195,8 @@ def print_audiences(cursor):
 
 
 def add_building(cursor):
-    name = str(input("Building name: "))
-    location = str(input("Building location: "))
+    name = input("Building name: ")
+    location = input("Building location: ")
     capacity = int(input("Building capacity: "))
 
     sql = '''
@@ -221,8 +221,8 @@ def remove_building(cursor):
 
 
 def add_performance(cursor):
-    name = str(input("Performance name: "))
-    type = str(input("Performance type: "))
+    name = input("Performance name: ")
+    type = input("Performance type: ")
     price = int(input("Performance price: "))
 
     sql = '''
@@ -247,8 +247,8 @@ def remove_performance(cursor):
 
 
 def add_audience(cursor):
-    name = str(input("Performance name: "))
-    gender = str(input("Performance gender: "))
+    name = input("Performance name: ")
+    gender = input("Performance gender: ")
     age = int(input("Performance age: "))
 
     sql = '''
@@ -281,7 +281,7 @@ def reset_db(cursor):
 def performance_assign(cursor):
     b_id = int(input("Building ID: "))
     p_id = int(input("Performance ID: "))
-    sql =  "SELECT P_ID FROM Assignment WHERE P_ID = {0}".format(p_id)
+    sql = "SELECT P_ID FROM Assignment WHERE P_ID = {0}".format(p_id)
     cursor.execute(sql)
     row = cursor.fetchone()
     print(row)
@@ -364,8 +364,6 @@ def performance_book(cursor):
     print("price: " + str(round(len(seat_number_list) * price * discount, 0)))
 
 
-
-
 def print_assignment(cursor):
     b_id = int(input("Building ID: "))
     sql = '''
@@ -394,11 +392,72 @@ def print_assignment(cursor):
 
 
 def print_audience_book(cursor):
-    pass
+    p_id = int(input("Performance ID: "))
+    sql = "SELECT ID FROM Performance WHERE ID =  {0}".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the performance is not in Database")
+        return
+
+    sql = '''
+            SELECT DISTINCT ID, Name, Gender, Age
+            FROM Book JOIN Audience ON(ID = A_ID) 
+            '''
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    connection.commit()
+
+    maxsize = get_max_size(rows, 4)
+    basesize = [2, 4, 5, 3]
+    for i in range(len(maxsize)):
+        maxsize[i] = max(maxsize[i], basesize[i])
+    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
+              "{3:" + str(maxsize[3]) + "}"]
+    FORMAT = "    ".join(FORMAT)
+    print("--------------------------------------------------------------------------------")
+    print(FORMAT.format("id", "name", "gender", "age"))
+    print("--------------------------------------------------------------------------------")
+    for row in rows:
+        [identifier, name, gender, age] = row
+        print(FORMAT.format(str(identifier), name, gender, str(age)))
+    print("--------------------------------------------------------------------------------\n")
 
 
 def print_seat_booked(cursor):
-    pass
+    p_id = int(input("Performance ID: "))
+    sql = "SELECT ID FROM Performance WHERE ID =  {0}".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the performance is not in Database")
+        return
+
+    sql = '''
+            SELECT A_ID, Seat
+            FROM Book
+            WHERE P_ID = {0}
+            '''.format(p_id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    connection.commit()
+
+    maxsize = get_max_size(rows, 4)
+    basesize = [2, 4, 5, 3]
+    for i in range(len(maxsize)):
+        maxsize[i] = max(maxsize[i], basesize[i])
+    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
+              "{3:" + str(maxsize[3]) + "}"]
+    FORMAT = "    ".join(FORMAT)
+    print("--------------------------------------------------------------------------------")
+    print(FORMAT.format("id", "name", "gender", "age"))
+    print("--------------------------------------------------------------------------------")
+    for row in rows:
+        [identifier, name, gender, age] = row
+        print(FORMAT.format(str(identifier), name, gender, str(age)))
+    print("--------------------------------------------------------------------------------\n")
 
 
 
@@ -420,39 +479,39 @@ while True:
         print("Please put the integer between 1 to 16")
         continue
     try:
-        with connection.cursor() as cursor:
+        with connection.cursor() as cur:
             if(action == 1):
-                print_buildings(cursor)
+                print_buildings(cur)
             elif(action == 2):
-                print_performances(cursor)
+                print_performances(cur)
             elif(action == 3):
-                print_audiences(cursor)
+                print_audiences(cur)
             elif(action == 4):
-                add_building(cursor)
+                add_building(cur)
             elif(action == 5):
-                remove_building(cursor)
+                remove_building(cur)
             elif(action == 6):
-                add_performance(cursor)
+                add_performance(cur)
             elif(action == 7):
-                remove_performance(cursor)
+                remove_performance(cur)
             elif(action == 8):
-                add_audience(cursor)
+                add_audience(cur)
             elif(action == 9):
-                remove_audience(cursor)
+                remove_audience(cur)
             elif(action == 10):
-                performance_assign(cursor)
+                performance_assign(cur)
             elif(action == 11):
-                performance_book(cursor)
+                performance_book(cur)
             elif(action == 12):
-                print_assignment(cursor)
+                print_assignment(cur)
             elif(action == 13):
-                print_audience_book(cursor)
+                print_audience_book(cur)
             elif(action == 14):
-                print_seat_booked(cursor)
+                print_seat_booked(cur)
             elif(action == 15):
                 break
             elif(action == 16):
-                reset_db(cursor)
+                reset_db(cur)
             else:
                 print("Please put the integer between 1 to 16")
     except():
