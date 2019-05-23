@@ -25,7 +25,7 @@ ENGINE = InnoDB;
 '''
 ,'''
 CREATE TABLE IF NOT EXISTS `Audience` (
-  `ID` INT UNSIGNED NOT NULL,
+  `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
   `Gender` VARCHAR(1) CHARACTER SET 'utf8' NULL,
   `Age` INT UNSIGNED NULL,
@@ -114,16 +114,15 @@ def start():
     ============================================================'''
           )
 
-def print_buildings():
-    with connection.cursor() as cursor:
-        sql = '''
-                SELECT ID, Name, Location, Capacity, COUNT(P_ID) as C
-                FROM Building LEFT JOIN Assignment ON ID = B_ID  
-                GROUP BY ID
-                ORDER BY ID;
-        '''
-        cursor.execute(sql)
-        rows = cursor.fetchall()
+def print_buildings(cursor):
+    sql = '''
+            SELECT ID, Name, Location, Capacity, COUNT(P_ID) as C
+            FROM Building LEFT JOIN Assignment ON(ID = B_ID)  
+            GROUP BY ID
+            ORDER BY ID;
+    '''
+    cursor.execute(sql)
+    rows = cursor.fetchall()
     connection.commit()
 
     maxsize = get_max_size(rows, 5)
@@ -142,16 +141,15 @@ def print_buildings():
     return
 
 
-def print_performances():
-    with connection.cursor() as cursor:
-        sql = '''
-                SELECT ID, Name, Type, Price, COUNT(Seat) as C
-                FROM Performance LEFT JOIN Book ON ID = P_ID  
-                GROUP BY ID
-                ORDER BY ID;
-        '''
-        cursor.execute(sql)
-        rows = cursor.fetchall()
+def print_performances(cursor):
+    sql = '''
+            SELECT ID, Name, Type, Price, COUNT(Seat) as C
+            FROM Performance LEFT JOIN Book ON(ID = P_ID)  
+            GROUP BY ID
+            ORDER BY ID;
+    '''
+    cursor.execute(sql)
+    rows = cursor.fetchall()
     connection.commit()
 
     maxsize = get_max_size(rows, 5)
@@ -170,15 +168,14 @@ def print_performances():
     return
 
 
-def print_audiences():
-    with connection.cursor() as cursor:
-        sql = '''
-                SELECT ID, Name, Gender, Age
-                FROM Audience
-                ORDER BY ID;
-        '''
-        cursor.execute(sql)
-        rows = cursor.fetchall()
+def print_audiences(cursor):
+    sql = '''
+            SELECT ID, Name, Gender, Age
+            FROM Audience
+            ORDER BY ID;
+    '''
+    cursor.execute(sql)
+    rows = cursor.fetchall()
     connection.commit()
 
     maxsize = get_max_size(rows, 4)
@@ -197,124 +194,210 @@ def print_audiences():
     return
 
 
-def add_building():
+def add_building(cursor):
     name = str(input("Building name: "))
     location = str(input("Building location: "))
     capacity = int(input("Building capacity: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                INSERT INTO Building
-                (Name, Location, Capacity)
-                VALUES("{0}", "{1}", {2})
-        '''.format(name, location, capacity)
-        cursor.execute(sql)
+    sql = '''
+            INSERT INTO Building
+            (Name, Location, Capacity)
+            VALUES("{0}", "{1}", {2})
+    '''.format(name, location, capacity)
+    cursor.execute(sql)
     connection.commit()
     print("A building is successfully inserted\n")
 
 
-def remove_building():
+def remove_building(cursor):
     identifier = int(input("Building ID: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                DELETE FROM Building
-                WHERE ID = {0}'''.format(identifier)
-        cursor.execute(sql)
+    sql = '''
+            DELETE FROM Building
+            WHERE ID = {0}'''.format(identifier)
+    cursor.execute(sql)
     connection.commit()
     print("the building is successfully deleted\n")
 
 
-def add_performance():
+def add_performance(cursor):
     name = str(input("Performance name: "))
     type = str(input("Performance type: "))
     price = int(input("Performance price: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                INSERT INTO Performance
-                (Name, Type, Price)
-                VALUES("{0}", "{1}", {2})
-        '''.format(name, type, price)
-        cursor.execute(sql)
+    sql = '''
+            INSERT INTO Performance
+            (Name, Type, Price)
+            VALUES("{0}", "{1}", {2})
+    '''.format(name, type, price)
+    cursor.execute(sql)
     connection.commit()
     print("A performance is successfully inserted\n")
 
 
-def remove_performance():
+def remove_performance(cursor):
     identifier = int(input("performance ID: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                DELETE FROM Performance
-                WHERE ID = {0}'''.format(identifier)
-        cursor.execute(sql)
+    sql = '''
+            DELETE FROM Performance
+            WHERE ID = {0}'''.format(identifier)
+    cursor.execute(sql)
     connection.commit()
     print("the performance is successfully deleted\n")
 
 
-def add_audience():
+def add_audience(cursor):
     name = str(input("Performance name: "))
     gender = str(input("Performance gender: "))
     age = int(input("Performance age: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                INSERT INTO Audience
-                (Name, Gender, Age)
-                VALUES("{0}", "{1}", {2})
-        '''.format(name, gender, age)
-        cursor.execute(sql)
+    sql = '''
+            INSERT INTO Audience
+            (Name, Gender, Age)
+            VALUES("{0}", "{1}", {2})
+    '''.format(name, gender, age)
+    cursor.execute(sql)
     connection.commit()
     print("A audience is successfully inserted\n")
 
 
-def remove_audience():
+def remove_audience(cursor):
     identifier = int(input("Audience ID: "))
 
-    with connection.cursor() as cursor:
-        sql = '''
-                DELETE FROM Audience
-                WHERE ID = {0}'''.format(identifier)
-        cursor.execute(sql)
+    sql = '''
+            DELETE FROM Audience
+            WHERE ID = {0}'''.format(identifier)
+    cursor.execute(sql)
     connection.commit()
     print("the audience is successfully deleted\n")
 
-def reset_db():
-    with connection.cursor() as cursor:
-        for sql in RESET_SQL:
-            cursor.execute(sql)
+def reset_db(cursor):
+    for sql in RESET_SQL:
+        cursor.execute(sql)
     connection.commit()
     return
 
 
-def performance_book():
+def performance_assign(cursor):
     b_id = int(input("Building ID: "))
     p_id = int(input("Performance ID: "))
-
-    with connection.cursor() as cursor:
-        sql = '''
-                INSERT INTO Assignment
-                (P_ID, B_ID) VALUES({0}, {1}'''.format(p_id, b_id)
-        cursor.execute(sql)
+    sql =  "SELECT P_ID FROM Assignment WHERE P_ID = {0}".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    print(row)
+    if row is not None:
+        print("This performance is already assigned to other building")
+        return
+    sql = '''
+            INSERT INTO Assignment
+            (P_ID, B_ID) VALUES({0}, {1})'''.format(p_id, b_id)
+    cursor.execute(sql)
     connection.commit()
     print("the performance is successfully assigned to the building\n")
     return
 
 
-def performance_assign():
+def performance_book(cursor):
+    p_id = int(input("Performance ID: "))
+
+    sql = "SELECT Price FROM Performance WHERE ID = {0}".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the performance is not in Database")
+        return
+    price = row[0]
+
+    sql = "SELECT ID, Capacity FROM Assignment, Building WHERE P_ID = {0} and ID = B_ID".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the performance is not assigned")
+        return
+
+    b_id = row[0]
+    capacity = row[1]
+
+    a_id = int(input("Audience ID: "))
+
+    sql = "SELECT Age FROM Audience WHERE ID = {0}".format(a_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the audience is not in Database")
+        return
+    age = row[0]
+
+    seat_number_list = [int(x) for x in input("Seat Number: ").strip().split(',')]
+
+    sql = "SELECT Seat FROM Book WHERE P_ID = {0}".format(p_id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    connection.commit()
+    booked_seat = []
+    if rows is not None:
+        booked_seat = [row[0] for row in rows]
+    for seat_number in seat_number_list:
+        if capacity < seat_number or seat_number < 1:
+            print("invalid seat number")
+            connection.rollback()
+            return
+        if seat_number in booked_seat:
+            print("some seat is already booked")
+            connection.rollback()
+            return
+        sql = "INSERT INTO Book (A_ID, P_ID, B_ID, Seat) VALUES({0}, {1}, {2}, {3})".format(a_id, p_id, b_id, seat_number)
+        cursor.execute(sql)
+    connection.commit()
+
+    discount = 1
+    if age < 8:
+        discount = 0
+    elif age < 13:
+        discount = 0.5
+    elif age < 19:
+        discount = 0.8
+
+    print("price: " + str(round(len(seat_number_list) * price * discount, 0)))
+
+
+
+
+def print_assignment(cursor):
+    b_id = int(input("Building ID: "))
+    sql = '''
+            SELECT Name, Type, Price, Count(Seat)
+            FROM Assignment JOIN Performance ON(ID = P_ID) LEFT JOIN Book ON(ID = Book.P_ID) 
+            WHERE Assignment.B_ID = {0}
+            GROUP BY ID'''.format(b_id)
+    cursor.execute(sql)
+    rows = cursor.fetchall()
+    connection.commit()
+
+    maxsize = [len(str(b_id))] + get_max_size(rows, 4)
+    basesize = [2, 4, 4, 5, 6]
+    for i in range(len(maxsize)):
+        maxsize[i] = max(maxsize[i], basesize[i])
+    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
+              "{3:" + str(maxsize[3]) + "}", "{4:" + str(maxsize[4]) + "}"]
+    FORMAT = "    ".join(FORMAT)
+    print("--------------------------------------------------------------------------------")
+    print(FORMAT.format("id", "name", "type", "price", "booked"))
+    print("--------------------------------------------------------------------------------")
+    for row in rows:
+        [name, type, price, booked] = row
+        print(FORMAT.format(str(b_id), name, type, str(price), str(booked)))
+    print("--------------------------------------------------------------------------------\n")
+
+
+def print_audience_book(cursor):
     pass
 
 
-def print_assignment():
-    pass
-
-
-def print_audience_book():
-    pass
-
-
-def print_performance_book():
+def print_seat_booked(cursor):
     pass
 
 
@@ -337,41 +420,41 @@ while True:
         print("Please put the integer between 1 to 16")
         continue
     try:
-        if(action == 1):
-            print_buildings()
-        elif(action == 2):
-            print_performances()
-        elif(action == 3):
-            print_audiences()
-            print("d")
-        elif(action == 4):
-            add_building()
-        elif(action == 5):
-            remove_building()
-        elif(action == 6):
-            add_performance()
-        elif(action == 7):
-            remove_performance()
-        elif(action == 8):
-            add_audience()
-        elif(action == 9):
-            remove_audience()
-        elif(action == 10):
-            performance_assign()
-        elif(action == 11):
-            performance_book()
-        elif(action == 12):
-            print_assignment()
-        elif(action == 13):
-            print_audience_book()
-        elif(action == 14):
-            print_performance_book()
-        elif(action == 15):
-            break
-        elif(action == 16):
-            reset_db()
-        else:
-            print("Please put the integer between 1 to 16")
+        with connection.cursor() as cursor:
+            if(action == 1):
+                print_buildings(cursor)
+            elif(action == 2):
+                print_performances(cursor)
+            elif(action == 3):
+                print_audiences(cursor)
+            elif(action == 4):
+                add_building(cursor)
+            elif(action == 5):
+                remove_building(cursor)
+            elif(action == 6):
+                add_performance(cursor)
+            elif(action == 7):
+                remove_performance(cursor)
+            elif(action == 8):
+                add_audience(cursor)
+            elif(action == 9):
+                remove_audience(cursor)
+            elif(action == 10):
+                performance_assign(cursor)
+            elif(action == 11):
+                performance_book(cursor)
+            elif(action == 12):
+                print_assignment(cursor)
+            elif(action == 13):
+                print_audience_book(cursor)
+            elif(action == 14):
+                print_seat_booked(cursor)
+            elif(action == 15):
+                break
+            elif(action == 16):
+                reset_db(cursor)
+            else:
+                print("Please put the integer between 1 to 16")
     except():
         break
 connection.close()
