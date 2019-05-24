@@ -1,14 +1,14 @@
 SHOW TABLES;
 Select * from Building;
 Select * from Book;
-INSERT INTO Building (Name, Location, Capacity) VALUES("The Fillmore", "San Francisco", 1000); 
-INSERT INTO Building (Name, Location, Capacity) VALUES("Great American Music Hall", "San Francisco", 1500); 
-INSERT INTO Building (Name, Location, Capacity) VALUES("Fox Theater", "Oakland", 3000); 
-INSERT INTO Building (Name, Location, Capacity) VALUES("Trout’s Nightclub", "Bakersfield", 1200); 
-INSERT INTO Building (Name, Location, Capacity) VALUES("Troubadour", "West Hollywood", 1800); 
-INSERT INTO Building (Name, Location, Capacity) VALUES("The Lighthouse Cafe", "Hermosa Beach", 1500);
-INSERT INTO Building (Name, Location, Capacity) VALUES("The Casbah", "San Diego", 800);
-INSERT INTO Building (Name, Location, Capacity) VALUES("Art Center", "Seoul", 200);
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Fillmore", "San Francisco", 10); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Great American Music Hall", "San Francisco", 15); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Fox Theater", "Oakland", 30); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Trout’s Nightclub", "Bakersfield", 12); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("Troubadour", "West Hollywood", 18); 
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Lighthouse Cafe", "Hermosa Beach", 15);
+INSERT INTO Building (Name, Location, Capacity) VALUES("The Casbah", "San Diego", 8);
+INSERT INTO Building (Name, Location, Capacity) VALUES("Art Center", "Seoul", 2);
 
 INSERT INTO Performance (Name, Type, Price) VALUES("Le Reve", "Musical", 150000);
 INSERT INTO Performance (Name, Type, Price) VALUES("Michael Jackson ONE", "Musical", 300000);
