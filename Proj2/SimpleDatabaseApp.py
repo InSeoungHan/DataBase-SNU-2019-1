@@ -1,89 +1,94 @@
 import pymysql.cursors
-general_string_size = 200 # this exist for convenience. you should know all schemas in the Database.
 
-RESET_SQL = ["DROP TABLE IF EXISTS Assignment;", "DROP TABLE IF EXISTS Book;", "DROP TABLE IF EXISTS Building;", "DROP TABLE IF EXISTS Performance;", "DROP TABLE IF EXISTS Audience;"
-    , "SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;"
-    , "SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;"
-    , "SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';"
-    , '''
-    CREATE TABLE IF NOT EXISTS `Building` (
-    `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
-    `Location` VARCHAR(200) CHARACTER SET 'utf8' NULL,
-    `Capacity` INT UNSIGNED NULL,
-    PRIMARY KEY (`ID`))
-    ENGINE = InnoDB;
-    '''
-,'''
-CREATE TABLE IF NOT EXISTS `Performance` (
-  `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
-  `Type` VARCHAR(200) CHARACTER SET 'utf8' NULL,
-  `Price` INT UNSIGNED NULL,
-  PRIMARY KEY (`ID`))
-ENGINE = InnoDB;
-'''
-,'''
-CREATE TABLE IF NOT EXISTS `Audience` (
-  `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
-  `Gender` VARCHAR(1) CHARACTER SET 'utf8' NULL,
-  `Age` INT UNSIGNED NULL,
-  PRIMARY KEY (`ID`))
-ENGINE = InnoDB;
-'''
+# A set of queries that drop all tables in database and reset table schemas
+# These queries was automatically made from MySQLWorkbench EER
+RESET_SQL = ["DROP TABLE IF EXISTS Assignment;",
+             "DROP TABLE IF EXISTS Book;",
+             "DROP TABLE IF EXISTS Building;",
+             "DROP TABLE IF EXISTS Performance;",
+             "DROP TABLE IF EXISTS Audience;",
+             "SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;",
+             "SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;",
+             "SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';",
+             '''
+                CREATE TABLE IF NOT EXISTS `Building` (
+                `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
+                `Location` VARCHAR(200) CHARACTER SET 'utf8' NULL,
+                `Capacity` INT UNSIGNED NULL,
+                PRIMARY KEY (`ID`))
+                ENGINE = InnoDB;
+             ''',
+             '''
+                CREATE TABLE IF NOT EXISTS `Performance` (
+                  `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                  `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
+                  `Type` VARCHAR(200) CHARACTER SET 'utf8' NULL,
+                  `Price` INT UNSIGNED NULL,
+                  PRIMARY KEY (`ID`))
+                ENGINE = InnoDB;
+             ''',
+             '''
+                CREATE TABLE IF NOT EXISTS `Audience` (
+                  `ID` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+                  `Name` VARCHAR(200) CHARACTER SET 'utf8' NULL,
+                  `Gender` VARCHAR(1) CHARACTER SET 'utf8' NULL,
+                  `Age` INT UNSIGNED NULL,
+                  PRIMARY KEY (`ID`))
+                ENGINE = InnoDB;
+             ''',
+             '''
+                CREATE TABLE IF NOT EXISTS `Assignment` (
+                  `P_ID` INT UNSIGNED NOT NULL,
+                  `B_ID` INT UNSIGNED NOT NULL,
+                  PRIMARY KEY (`P_ID`, `B_ID`),
+                  INDEX `Building-idx` (`B_ID` ASC),
+                  CONSTRAINT `Assigment-B`
+                    FOREIGN KEY (`B_ID`)
+                    REFERENCES `Building` (`ID`)
+                    ON DELETE CASCADE
+                    ON UPDATE NO ACTION,
+                  CONSTRAINT `Assignment-P`
+                    FOREIGN KEY (`P_ID`)
+                    REFERENCES `Performance` (`ID`)
+                    ON DELETE NO ACTION
+                    ON UPDATE NO ACTION)
+                ENGINE = InnoDB;
+             ''',
+             '''
+                CREATE TABLE IF NOT EXISTS `Book` (
+                  `A_ID` INT UNSIGNED NULL,
+                  `P_ID` INT UNSIGNED NOT NULL,
+                  `B_ID` INT UNSIGNED NOT NULL,
+                  `Seat` INT UNSIGNED NOT NULL,
+                  PRIMARY KEY (`Seat`, `B_ID`, `P_ID`),
+                  INDEX `Audience_idx` (`A_ID` ASC),
+                  INDEX `Building_idx` (`B_ID` ASC),
+                  INDEX `Performance_idx` (`P_ID` ASC),
+                  CONSTRAINT `Book-P`
+                    FOREIGN KEY (`P_ID`)
+                    REFERENCES `Performance` (`ID`)
+                    ON DELETE CASCADE
+                    ON UPDATE NO ACTION,
+                  CONSTRAINT `Book-A`
+                    FOREIGN KEY (`A_ID`)
+                    REFERENCES `Audience` (`ID`)
+                    ON DELETE CASCADE
+                    ON UPDATE NO ACTION,
+                  CONSTRAINT `Book-B`
+                    FOREIGN KEY (`B_ID`)
+                    REFERENCES `Building` (`ID`)
+                    ON DELETE CASCADE
+                    ON UPDATE NO ACTION)
+                ENGINE = InnoDB;
+             ''',
+             "SET SQL_MODE=@OLD_SQL_MODE;",
+             "SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;",
+             "SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;"]
 
-,'''
-CREATE TABLE IF NOT EXISTS `Assignment` (
-  `P_ID` INT UNSIGNED NOT NULL,
-  `B_ID` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`P_ID`, `B_ID`),
-  INDEX `Building-idx` (`B_ID` ASC),
-  CONSTRAINT `Assigment-B`
-    FOREIGN KEY (`B_ID`)
-    REFERENCES `Building` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `Assignment-P`
-    FOREIGN KEY (`P_ID`)
-    REFERENCES `Performance` (`ID`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-'''
-,'''
-CREATE TABLE IF NOT EXISTS `Book` (
-  `A_ID` INT UNSIGNED NULL,
-  `P_ID` INT UNSIGNED NOT NULL,
-  `B_ID` INT UNSIGNED NOT NULL,
-  `Seat` INT UNSIGNED NOT NULL,
-  PRIMARY KEY (`Seat`, `B_ID`, `P_ID`),
-  INDEX `Audience_idx` (`A_ID` ASC),
-  INDEX `Building_idx` (`B_ID` ASC),
-  INDEX `Performance_idx` (`P_ID` ASC),
-  CONSTRAINT `Book-P`
-    FOREIGN KEY (`P_ID`)
-    REFERENCES `Performance` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `Book-A`
-    FOREIGN KEY (`A_ID`)
-    REFERENCES `Audience` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION,
-  CONSTRAINT `Book-B`
-    FOREIGN KEY (`B_ID`)
-    REFERENCES `Building` (`ID`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-'''
-
-,"SET SQL_MODE=@OLD_SQL_MODE;"
-,"SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;"
-,"SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;"]
-
-
+# helper function
+# construct list which entries contain maximum string length of i-th column
+# this maximum value will be used to calculate space bound
 def get_max_size(rows, l):
     if len(rows) == 0:
         return [0 for _ in range(l)]
@@ -93,6 +98,28 @@ def get_max_size(rows, l):
             maxsize[i] = max(maxsize[i], len(str(row[i])))
     return maxsize
 
+# helper function
+#
+def print_records(title, rows):
+    length = len(title)
+    maxsize = get_max_size(rows, length)
+    basesize = [len(attr) for attr in title]
+    for i in range(length):
+        maxsize[i] = max(maxsize[i], basesize[i])
+    line = [0] * length
+    for i in range(length):
+        line[i] = "{" + str(i) + ":" + str(maxsize[i]) + "}"
+    line = "    ".join(line)
+    print("--------------------------------------------------------------------------------")
+    print(line.format(*title))
+    print("--------------------------------------------------------------------------------")
+    for row in rows:
+        print(line.format(*map(str, row)))
+    print("--------------------------------------------------------------------------------\n")
+    return
+
+# start function
+# print all options that application can perform
 def start():
     print('''============================================================
     1. print all buildings
@@ -114,6 +141,10 @@ def start():
     ============================================================'''
           )
 
+
+# Option 1
+# Print out all buildings in database
+# Additionally, addpend the number of performances which assigned to each building to output
 def print_buildings(cursor):
     sql = '''
             SELECT ID, Name, Location, Capacity, COUNT(P_ID) as C
@@ -125,49 +156,30 @@ def print_buildings(cursor):
     rows = cursor.fetchall()
     connection.commit()
 
-    maxsize = get_max_size(rows, 5)
-    basesize = [2, 4, 8, 8, 8]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}", "{3:" + str(maxsize[3]) + "}", "{4:" + str(maxsize[4]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "location", "capacity", "assigned"))
-    print("--------------------------------------------------------------------------------")
-    for row in rows:
-        [identifier, name, location, capacity, assigned] = row
-        print(FORMAT.format(str(identifier), name, location, str(capacity), str(assigned)))
-    print("--------------------------------------------------------------------------------\n")
-    return
+    title = ["id", "name", "location", "capacity", "assigned"]
+    print_records(title, rows)
 
-
+# Option 2
+# Print out all performances in database
+# Additionally, addpend the number of distinct audience who booked each performance to output
 def print_performances(cursor):
     sql = '''
-            SELECT ID, Name, Type, Price, COUNT(Seat) as C
-            FROM Performance LEFT JOIN Book ON(ID = P_ID)  
+            SELECT ID, Name, Type, Price, Count(A_ID)
+            FROM (SELECT DISTINCT ID, Name, Type, Price, A_ID FROM Performance LEFT JOIN Book ON(ID = P_ID)) as T
             GROUP BY ID
             ORDER BY ID;
-    '''
+        '''
     cursor.execute(sql)
     rows = cursor.fetchall()
     connection.commit()
 
-    maxsize = get_max_size(rows, 5)
-    basesize = [2, 4, 4, 5, 6]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}", "{3:" + str(maxsize[3]) + "}", "{4:" + str(maxsize[4]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "type", "price", "booked"))
-    print("--------------------------------------------------------------------------------")
-    for row in rows:
-        [identifier, name, type, price, booked] = row
-        print(FORMAT.format(str(identifier), name, type, str(price), str(booked)))
-    print("--------------------------------------------------------------------------------\n")
+    title = ["id", "name", "type", "price", "booked"]
+    print_records(title, rows)
     return
 
 
+# Option 3
+# Print out all audiences in database
 def print_audiences(cursor):
     sql = '''
             SELECT ID, Name, Gender, Age
@@ -178,116 +190,157 @@ def print_audiences(cursor):
     rows = cursor.fetchall()
     connection.commit()
 
-    maxsize = get_max_size(rows, 4)
-    basesize = [2, 4, 3, 3]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}", "{3:" + str(maxsize[3]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "gender", "age"))
-    print("--------------------------------------------------------------------------------")
-    for row in rows:
-        [identifier, name, gender, age] = row
-        print(FORMAT.format(str(identifier), name, gender, str(age)))
-    print("--------------------------------------------------------------------------------\n")
+    title = ["id", "name", "gender", "age"]
+    print_records(title, rows)
     return
 
 
+# Option 4
+# Insert a building into Building table
 def add_building(cursor):
+    # Input
     name = input("Building name: ")
     location = input("Building location: ")
     capacity = int(input("Building capacity: "))
 
-    sql = '''
-            INSERT INTO Building
-            (Name, Location, Capacity)
-            VALUES("{0}", "{1}", {2})
-    '''.format(name, location, capacity)
+    # capacity check
+    if capacity < 1:
+        print("capacity should be bigger than or equal one")
+        return
+
+    # Insert
+    sql = '''INSERT INTO Building (Name, Location, Capacity) 
+             VALUES("{0}", "{1}", {2})'''.format(name[:200], location[:200], capacity)
     cursor.execute(sql)
     connection.commit()
     print("A building is successfully inserted\n")
 
 
+# Option 5
+# Delete a building from Building table
 def remove_building(cursor):
+    # Input
     identifier = int(input("Building ID: "))
 
-    sql = '''
-            DELETE FROM Building
-            WHERE ID = {0}'''.format(identifier)
+    # Building existence check
+    sql = "SELECT ID FROM Building WHERE ID = {0}".format(identifier)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the building is not in Database")
+        return
+
+    # Delete
+    sql = "DELETE FROM Building WHERE ID = {0}".format(identifier)
     cursor.execute(sql)
     connection.commit()
     print("the building is successfully deleted\n")
 
 
+# Option 6
+# Insert a performance into Performance table
 def add_performance(cursor):
+    # Input
     name = input("Performance name: ")
     type = input("Performance type: ")
     price = int(input("Performance price: "))
 
-    sql = '''
-            INSERT INTO Performance
-            (Name, Type, Price)
-            VALUES("{0}", "{1}", {2})
-    '''.format(name, type, price)
+    # Price range check
+    if price < 0:
+        print("price should be bigger than or equal 0")
+        return
+
+    # Insert
+    sql = '''INSERT INTO Performance (Name, Type, Price) 
+             VALUES("{0}", "{1}", {2})'''.format(name[:200], type[:200], price)
     cursor.execute(sql)
     connection.commit()
     print("A performance is successfully inserted\n")
 
 
+# Option 7
+# Delete a performance from Performance table
 def remove_performance(cursor):
+    # Input
     identifier = int(input("performance ID: "))
 
-    sql = '''
-            DELETE FROM Performance
-            WHERE ID = {0}'''.format(identifier)
+    # Performance existence check
+    sql = "SELECT ID FROM Performance WHERE ID = {0}".format(identifier)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the performance is not in Database")
+        return
+
+    # Delete
+    sql = '''DELETE FROM Performance WHERE ID = {0}'''.format(identifier)
     cursor.execute(sql)
     connection.commit()
     print("the performance is successfully deleted\n")
 
 
+# Option 8
+# Insert a audience into Audience table
 def add_audience(cursor):
+    # Input
     name = input("Performance name: ")
     gender = input("Performance gender: ")
     age = int(input("Performance age: "))
 
-    sql = '''
-            INSERT INTO Audience
-            (Name, Gender, Age)
-            VALUES("{0}", "{1}", {2})
-    '''.format(name, gender, age)
+    # Age range check
+    if age < 1:
+        print("age should be bigger than or equal one")
+        return
+
+    # Insert
+    sql = '''INSERT INTO Audience (Name, Gender, Age) VALUES("{0}", "{1}", {2})'''.format(name[:200], gender[:1], age)
     cursor.execute(sql)
     connection.commit()
     print("A audience is successfully inserted\n")
 
 
+# Option 9
+# Delete a audience from Audience table
 def remove_audience(cursor):
+    # Input
     identifier = int(input("Audience ID: "))
 
-    sql = '''
-            DELETE FROM Audience
-            WHERE ID = {0}'''.format(identifier)
+    # Audience existence check
+    sql = "SELECT ID FROM Audience WHERE ID = {0}".format(identifier)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    if row is None:
+        print("the audience is not in Database")
+        return
+
+    # Delete
+    sql = '''DELETE FROM Audience WHERE ID = {0}'''.format(identifier)
     cursor.execute(sql)
     connection.commit()
     print("the audience is successfully deleted\n")
 
-def reset_db(cursor):
-    for sql in RESET_SQL:
-        cursor.execute(sql)
-    connection.commit()
-    return
 
-
+# Option 10
+# Matching building and performance
 def performance_assign(cursor):
+    # Input
     b_id = int(input("Building ID: "))
     p_id = int(input("Performance ID: "))
+
+    # Beforehand, should check whether the performance is already assigned
     sql = "SELECT P_ID FROM Assignment WHERE P_ID = {0}".format(p_id)
     cursor.execute(sql)
     row = cursor.fetchone()
+    connection.commit()
     print(row)
     if row is not None:
         print("This performance is already assigned to other building")
         return
+
+    # Assign
     sql = '''
             INSERT INTO Assignment
             (P_ID, B_ID) VALUES({0}, {1})'''.format(p_id, b_id)
@@ -297,18 +350,14 @@ def performance_assign(cursor):
     return
 
 
+# Option 11
+# Book a performance in the name of a audience
 def performance_book(cursor):
+    # Input performance id which the audience want to book
     p_id = int(input("Performance ID: "))
 
-    sql = "SELECT Price FROM Performance WHERE ID = {0}".format(p_id)
-    cursor.execute(sql)
-    row = cursor.fetchone()
-    connection.commit()
-    if row is None:
-        print("the performance is not in Database")
-        return
-    price = row[0]
-
+    # Beforehand, should check whether the performance is assigned
+    # Get building id and building capacity
     sql = "SELECT ID, Capacity FROM Assignment, Building WHERE P_ID = {0} and ID = B_ID".format(p_id)
     cursor.execute(sql)
     row = cursor.fetchone()
@@ -320,19 +369,28 @@ def performance_book(cursor):
     b_id = row[0]
     capacity = row[1]
 
+    # Get price of the performance
+    # Do not need checking whether performance is exist because previous query verified it.
+    sql = "SELECT Price FROM Performance WHERE ID = {0}".format(p_id)
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    price = row[0]
+
+    # Input audience id who want to book the performance
     a_id = int(input("Audience ID: "))
 
+    # Get age of the audience
     sql = "SELECT Age FROM Audience WHERE ID = {0}".format(a_id)
     cursor.execute(sql)
     row = cursor.fetchone()
     connection.commit()
-    if row is None:
-        print("the audience is not in Database")
-        return
     age = row[0]
 
+    # Input seat list which the audience want
     seat_number_list = [int(x) for x in input("Seat Number: ").strip().split(',')]
 
+    # Get already booked seats "booked_seat"
     sql = "SELECT Seat FROM Book WHERE P_ID = {0}".format(p_id)
     cursor.execute(sql)
     rows = cursor.fetchall()
@@ -340,6 +398,8 @@ def performance_book(cursor):
     booked_seat = []
     if rows is not None:
         booked_seat = [row[0] for row in rows]
+
+    # If one of the desirous seats is already booked, rollback previous queries and return error message
     for seat_number in seat_number_list:
         if capacity < seat_number or seat_number < 1:
             print("invalid seat number")
@@ -353,6 +413,7 @@ def performance_book(cursor):
         cursor.execute(sql)
     connection.commit()
 
+    # Apply discount ratio to price according to discount policy
     discount = 1
     if age < 8:
         discount = 0
@@ -364,10 +425,17 @@ def performance_book(cursor):
     print("price: " + str(round(len(seat_number_list) * price * discount, 0)))
 
 
+# Option 12
+# Print all performances assigned to a building
+# Additionally, show the number of booked seats
 def print_assignment(cursor):
+    # Input
     b_id = int(input("Building ID: "))
+
+    # Get all performances which are assigned to the building
+    # And the number of booked seats of each performance
     sql = '''
-            SELECT Name, Type, Price, Count(Seat)
+            SELECT Assignment.B_ID, Name, Type, Price, Count(Seat)
             FROM Assignment JOIN Performance ON(ID = P_ID) LEFT JOIN Book ON(ID = Book.P_ID) 
             WHERE Assignment.B_ID = {0}
             GROUP BY ID'''.format(b_id)
@@ -375,24 +443,17 @@ def print_assignment(cursor):
     rows = cursor.fetchall()
     connection.commit()
 
-    maxsize = [len(str(b_id))] + get_max_size(rows, 4)
-    basesize = [2, 4, 4, 5, 6]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
-              "{3:" + str(maxsize[3]) + "}", "{4:" + str(maxsize[4]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "type", "price", "booked"))
-    print("--------------------------------------------------------------------------------")
-    for row in rows:
-        [name, type, price, booked] = row
-        print(FORMAT.format(str(b_id), name, type, str(price), str(booked)))
-    print("--------------------------------------------------------------------------------\n")
+    title = ["id", "name", "type", "price", "booked"]
+    print_records(title, rows)
+    return
 
-
+# Option 13
+# Given performance id, Print all audiences who have booked the performance
 def print_audience_book(cursor):
+    # Input
     p_id = int(input("Performance ID: "))
+
+    # Performance existence check
     sql = "SELECT ID FROM Performance WHERE ID =  {0}".format(p_id)
     cursor.execute(sql)
     row = cursor.fetchone()
@@ -401,33 +462,29 @@ def print_audience_book(cursor):
         print("the performance is not in Database")
         return
 
+    # Get audiences who have booked the performance
     sql = '''
             SELECT DISTINCT ID, Name, Gender, Age
-            FROM Book JOIN Audience ON(ID = A_ID) 
-            '''
+            FROM Book JOIN Audience ON(ID = A_ID)
+            WHERE P_ID = {0} 
+            '''.format(p_id)
     cursor.execute(sql)
     rows = cursor.fetchall()
     connection.commit()
 
-    maxsize = get_max_size(rows, 4)
-    basesize = [2, 4, 5, 3]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
-              "{3:" + str(maxsize[3]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "gender", "age"))
-    print("--------------------------------------------------------------------------------")
-    for row in rows:
-        [identifier, name, gender, age] = row
-        print(FORMAT.format(str(identifier), name, gender, str(age)))
-    print("--------------------------------------------------------------------------------\n")
+    title = ["id", "name", "gender", "age"]
+    print_records(title, rows)
+    return
 
 
+# Option 14
+# Given performance id, Print all seats and whether each seat is booked
 def print_seat_booked(cursor):
+    # Input
     p_id = int(input("Performance ID: "))
-    sql = "SELECT ID FROM Performance WHERE ID =  {0}".format(p_id)
+
+    # Performance existence check & assigned check
+    sql = "SELECT ID, B_ID FROM Performance LEFT JOIN Assignment ON(ID = P_ID) WHERE ID =  {0}".format(p_id)
     cursor.execute(sql)
     row = cursor.fetchone()
     connection.commit()
@@ -435,30 +492,43 @@ def print_seat_booked(cursor):
         print("the performance is not in Database")
         return
 
+    if row[1] is None:
+        print("the performance is not assigned")
+        return
+
+    # Get capacity of the building where the performance assigned to
+    sql = "SELECT Capacity FROM Building WHERE ID =  {0}".format(row[1])
+    cursor.execute(sql)
+    row = cursor.fetchone()
+    connection.commit()
+    capacity = row[0]
+
+    # Get all audiences who have booked the performance and seat numbers according to each audience
     sql = '''
-            SELECT A_ID, Seat
+            SELECT Seat, A_ID
             FROM Book
             WHERE P_ID = {0}
             '''.format(p_id)
     cursor.execute(sql)
     rows = cursor.fetchall()
     connection.commit()
-
-    maxsize = get_max_size(rows, 4)
-    basesize = [2, 4, 5, 3]
-    for i in range(len(maxsize)):
-        maxsize[i] = max(maxsize[i], basesize[i])
-    FORMAT = ["{0:" + str(maxsize[0]) + "}", "{1:" + str(maxsize[1]) + "}", "{2:" + str(maxsize[2]) + "}",
-              "{3:" + str(maxsize[3]) + "}"]
-    FORMAT = "    ".join(FORMAT)
-    print("--------------------------------------------------------------------------------")
-    print(FORMAT.format("id", "name", "gender", "age"))
-    print("--------------------------------------------------------------------------------")
+    audiences_list = ["" for _ in range(capacity)]
     for row in rows:
-        [identifier, name, gender, age] = row
-        print(FORMAT.format(str(identifier), name, gender, str(age)))
-    print("--------------------------------------------------------------------------------\n")
+        audiences_list[row[0]-1] = str(row[1])
 
+    title = ["seat_number", "audience_id"]
+    print_records(title, list(enumerate(audiences_list, start=1)))
+    return
+
+
+# Option 16
+# Reset database
+# execute all queries in RESET_SQL consecutively
+def reset_db(cursor):
+    for sql in RESET_SQL:
+        cursor.execute(sql)
+    connection.commit()
+    return
 
 
 # Connect to the database
@@ -470,6 +540,8 @@ connection = pymysql.connect(host='s.snu.ac.kr',
                              # charset='utf8mb4',
                              # cursorclass=pymysql.cursors.DictCursor
                              )
+
+
 
 start()
 while True:
